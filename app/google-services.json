@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "522878929601",
+    "firebase_url": "https://sasmovies-f2511.firebaseio.com",
+    "project_id": "sasmovies-f2511",
+    "storage_bucket": "sasmovies-f2511.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522878929601:android:6f7ce8945552574d",
+        "android_client_info": {
+          "package_name": "com.androidapp.sasmovies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "522878929601-hnmojiao1eu6fliso2uvpuo835frtmoa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.androidapp.sasmovies",
+            "certificate_hash": "6eea6a11756c0540bf5317de4861f60384fb743b"
+          }
+        },
+        {
+          "client_id": "522878929601-8sc5qhl0ej50t8f6up5cc86cq6cgrdnk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGxbBkEY9aKTldCfMzuEr5Yir2vwWTugc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "522878929601-8sc5qhl0ej50t8f6up5cc86cq6cgrdnk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
