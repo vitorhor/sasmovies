@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.androidapp.sasmovies.R;
+import com.androidapp.sasmovies.api.BaseApiService;
 import com.google.firebase.auth.FirebaseAuth;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -22,12 +23,16 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected FirebaseAuth mAuth;
 
+    protected BaseApiService service;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
+
+        service = BaseApiService.getInstance(this);
 
         allowProgressDialog = false;
 
