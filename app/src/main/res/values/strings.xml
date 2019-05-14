@@ -2,10 +2,12 @@
     <string name="app_name">SAS Movies</string>
     <string name="login">Login</string>
     <string name="movie_list">Filmes Populares</string>
+    <string name="movie_detail">Detalhes</string>
     <string name="do_login">Faça login utilizando <b>sua conta do Google</b> para ter acesso às informações dos filmes mais populares do momento!</string>
     <string name="signin_button_text">Login Google</string>
     <string name="login_failed">Não foi possível realizar o login.</string>
 
     <string name="transition_main">imgMain</string>
+    <string name="transition_detail">imgDetail</string>
     <string name="menu_loggout">Logout</string>
 </resources>
