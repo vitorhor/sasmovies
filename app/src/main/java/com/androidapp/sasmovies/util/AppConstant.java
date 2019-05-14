@@ -6,6 +6,10 @@ public interface AppConstant {
     String API_PASS = "R735MX$=P%#4N4mj";
 
     String API_DATE_FORMAT = "YYYY-MM-dd HH:mm:ss zzz";
+    String AMERICAN_DATE_FORMAT = "YYYY-MM-dd";
+    String BRAZILIAN_DATE_FORMAT = "dd/MM/YYYY";
+
+    String KEY_ID = "id";
 
     String KEY_PREFERENCE_USER_TOKEN = "user_token";
     String KEY_PREFERENCE_PLACE_TOKEN = "placeToken";

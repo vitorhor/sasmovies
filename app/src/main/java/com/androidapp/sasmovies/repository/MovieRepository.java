@@ -29,4 +29,8 @@ public class MovieRepository {
 
     }
 
+    public void getMovieDetail(String id, JsonHttpResponseHandler jsonHttpResponseHandler) {
+        moviesService.getMovieDetail(id, jsonHttpResponseHandler);
+    }
+
 }

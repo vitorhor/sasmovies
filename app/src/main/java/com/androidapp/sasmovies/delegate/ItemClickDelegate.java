@@ -4,6 +4,6 @@ import android.view.View;
 
 public interface ItemClickDelegate {
 
-    void onItemClick(int id, View v);
+    void onItemClick(String id, View v);
 
 }

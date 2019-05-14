@@ -37,14 +37,14 @@ public class MovieAdapter extends RecyclerView.Adapter {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView txName;
         public ProgressBar progressBar;
-        public ImageView image;
+        public ImageView imgPoster;
 
         public ViewHolder(View view) {
             super(view);
 
             txName = view.findViewById(R.id.txName);
             progressBar = view.findViewById(R.id.progressBar);
-            image = view.findViewById(R.id.image);
+            imgPoster = view.findViewById(R.id.imgPoster);
         }
     }
 
@@ -70,13 +70,17 @@ public class MovieAdapter extends RecyclerView.Adapter {
         featuredViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClickDelegate.onItemClick(entity.getId(), v);
+                itemClickDelegate.onItemClick(entity.getId() + "", v);
             }
         });
 
+        if( android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP ) {
+            featuredViewHolder.imgPoster.setTransitionName(mContext.getString(R.string.transition_detail) + entity.getId());
+        }
+
         String url = "https://image.tmdb.org/t/p/w500/" + entity.getPosterPath();
 
-        ImageLoader.getInstance().displayImage(url, featuredViewHolder.image, null, new SimpleImageLoadingListener() {
+        ImageLoader.getInstance().displayImage(url, featuredViewHolder.imgPoster, null, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
 

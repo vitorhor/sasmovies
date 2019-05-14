@@ -1,11 +1,13 @@
 package com.androidapp.sasmovies.activity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -16,7 +18,6 @@ import com.androidapp.sasmovies.adapter.MovieAdapter;
 import com.androidapp.sasmovies.api.MoviesService;
 import com.androidapp.sasmovies.contract.MovieContract;
 import com.androidapp.sasmovies.delegate.ItemClickDelegate;
-import com.androidapp.sasmovies.delegate.RequestDelegate;
 import com.androidapp.sasmovies.entity.Movie;
 import com.androidapp.sasmovies.presenter.MoviePresenter;
 import com.androidapp.sasmovies.repository.MovieRepository;
@@ -25,15 +26,13 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements MovieContract.View, RequestDelegate, ItemClickDelegate {
+public class MainActivity extends BaseActivity implements MovieContract.View, ItemClickDelegate {
 
     private MovieContract.Presenter presenter;
 
     private ViewFlipper viewFlipper;
 
     private RecyclerView recyclerView;
-
-    private MovieAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +61,6 @@ public class MainActivity extends BaseActivity implements MovieContract.View, Re
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setNestedScrollingEnabled(false);
-//        recyclerView.addItemDecoration(new CustomDividerItemDecoration(this, null, false, true));
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(mLayoutManager);
 
@@ -72,15 +70,6 @@ public class MainActivity extends BaseActivity implements MovieContract.View, Re
     protected void setActions() {
 
     }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        super.onActivityResult(requestCode, resultCode, data);
-
-    }
-
 
     @Override
     public void setPresenter(MovieContract.Presenter presenter) {
@@ -94,7 +83,7 @@ public class MainActivity extends BaseActivity implements MovieContract.View, Re
     @Override
     public void showMovies(List<Movie> movieList) {
 
-        adapter = new MovieAdapter(this, this, movieList);
+        MovieAdapter adapter = new MovieAdapter(this, this, movieList);
         recyclerView.setAdapter(adapter);
 
         viewFlipper.setDisplayedChild(AppConstant.STATUS_SHOW);
@@ -102,17 +91,26 @@ public class MainActivity extends BaseActivity implements MovieContract.View, Re
     }
 
     @Override
-    public void onStartRequest() {
+    public void onItemClick(String id, View v) {
 
-    }
+        Intent i = new Intent(this, MovieDetailActivity.class);
 
-    @Override
-    public void onFinishRequest() {
+        i.putExtra(AppConstant.KEY_ID, id);
 
-    }
+        Bundle bundle = new Bundle();
 
-    @Override
-    public void onItemClick(int id, View v) {
+        if( android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP ) {
+
+            ImageView image = v.findViewById(R.id.imgPoster);
+
+            ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(this, image, getString(R.string.transition_detail) + id);
+            bundle = transitionActivityOptions.toBundle();
+
+            getWindow().setExitTransition(null);
+
+        }
+
+        startActivity(i, bundle);
 
     }
 

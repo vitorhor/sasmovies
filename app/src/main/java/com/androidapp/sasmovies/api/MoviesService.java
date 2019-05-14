@@ -20,4 +20,8 @@ public class MoviesService {
         service.request().to( "/movie/popular" ).authGet().ptbr().get(handler);
     }
 
+    public void getMovieDetail(String id, JsonHttpResponseHandler handler) {
+        service.request().to( "/movie/" + id ).authGet().ptbr().get(handler);
+    }
+
 }
