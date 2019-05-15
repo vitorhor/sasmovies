@@ -4,25 +4,23 @@ import com.androidapp.sasmovies.BaseView;
 import com.androidapp.sasmovies.entity.Movie;
 import com.androidapp.sasmovies.presenter.BasePresenter;
 
-import java.util.List;
-
-public interface MovieContract {
+public interface MovieDetailContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showMovies(List<Movie> movieList);
+        void showDetails(Movie entity);
 
-//        void getAccountId();
-
-        void authUser(String requestToken);
+        void refreshFavorite(boolean favorite);
 
     }
 
     interface Presenter extends BasePresenter {
 
-        void loadMovies();
+        void markAsFavorite(String id, boolean favorite);
 
-        void createSession();
+        void getDetails(String id);
+
+        void getFavorites(Movie entity);
 
     }
 

@@ -53,6 +53,13 @@ public class LoginActivity extends BaseActivity {
             imgMain.setTransitionName(getString(R.string.transition_main));
         }
 
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                    }
+                });
+
     }
 
     @Override
