@@ -1,6 +1,7 @@
 package com.androidapp.sasmovies.api;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.androidapp.sasmovies.util.AppConstant;
 import com.loopj.android.http.AsyncHttpClient;
@@ -19,6 +20,7 @@ public class BaseApiService {
 
     private static BaseApiService instance;
 
+    public static final String URL_AUTH = "https://api.themoviedb.org/4";
     public static final String URL = "https://api.themoviedb.org/3";
 
     private final AsyncHttpClient client;
@@ -46,47 +48,22 @@ public class BaseApiService {
         client.setTimeout(30000);
     }
 
-    public String getAccessToken() {
-        return Prefs.getString(AppConstant.KEY_PREFERENCE_USER_TOKEN, null);
-    }
-
-//    public void removeFromPreferences(String key) {
-//        Prefs.remove(key);
-//    }
-
     public BaseApiService request() {
 
         client.addHeader("Content-Type", "application/json");
         client.addHeader("charset", "UTF-8");
-        client.addHeader("AppToken", AppConstant.API_TOKEN);
 
         return this;
 
-    }
-
-    public BaseApiService addEstablishment() {
-
-        String placeToken = Prefs.getString(AppConstant.KEY_PREFERENCE_PLACE_TOKEN, "");
-//
-        client.addHeader("EstablishmentToken", placeToken);
-//        client.addHeader("EstablishmentToken", "53c49811-ad1b-4dcb-94be-3bb5f166fb03");
-
-        return this;
-
-    }
-
-    public BaseApiService addCustomId(String customField, int id) {
-        client.addHeader(customField, id + "");
-        return this;
     }
 
     public BaseApiService authPost() {
 
-//        String userToken = "53c803bf-2332-4cac-a571-70d1f43083dc";
+        String apiToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZGE4ZTg2NGMyMzBiNzMzZTg2MTA1ZmQ1YzRiNWMxMiIsInN1YiI6IjVjZDMxZDZkYzNhMzY4MGI3MGRkNTY0NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GnO9lV9mG4miu35_NrYNWE8g3qqENnMRrAuUNAvUROk";
 
-        String userToken = Prefs.getString(AppConstant.KEY_PREFERENCE_USER_TOKEN, "");
-        client.addHeader("CustomerToken", userToken);
+        client.addHeader("Authorization", apiToken);
         return request();
+
     }
 
     public BaseApiService authGet() {
@@ -96,8 +73,23 @@ public class BaseApiService {
 
     }
 
+    public BaseApiService addAuthSession() {
+
+        String sessionId = Prefs.getString(AppConstant.SESSION_ID, "");
+        Log.d("mslz", "SESSION_ID = " + sessionId);
+
+        this.path = path + "&session_id=" + sessionId;
+        return this;
+
+    }
+
     public BaseApiService to(String path) {
         this.path = URL + path;
+        return this;
+    }
+
+    public BaseApiService toAuth(String path) {
+        this.path = URL_AUTH + path;
         return this;
     }
 
@@ -106,7 +98,7 @@ public class BaseApiService {
         return this;
     }
 
-    public void post(JSONObject jsonParameters, JsonHttpResponseHandler handler) throws UnsupportedEncodingException {
+    public void post(JSONObject jsonParameters, JsonHttpResponseHandler handler) {
         StringEntity entity = new StringEntity(jsonParameters.toString(),"UTF-8");
         this.client.post(context, path, entity, "application/json", handler);
     }
@@ -114,6 +106,10 @@ public class BaseApiService {
     public void post(String jsonParameters, JsonHttpResponseHandler handler) throws UnsupportedEncodingException {
         StringEntity entity = new StringEntity(jsonParameters);
         this.client.post(context, path, entity, "application/json", handler);
+    }
+
+    public void post(JsonHttpResponseHandler handler) {
+        this.client.post(context, path, null, "application/json", handler);
     }
 
     public void delete(JsonHttpResponseHandler handler) {

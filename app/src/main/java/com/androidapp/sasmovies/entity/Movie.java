@@ -84,6 +84,8 @@ public class Movie {
     @Expose
     private Integer voteCount;
 
+    private Boolean favorite = false;
+
     public Boolean getAdult() {
         return adult;
     }
@@ -282,5 +284,13 @@ public class Movie {
 
     public void setRevenue(Long revenue) {
         this.revenue = revenue;
+    }
+
+    public Boolean getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        this.favorite = favorite;
     }
 }

@@ -39,6 +39,13 @@
 
         </activity>
 
+        <activity android:name=".activity.AuthActivity"
+            android:label="@string/auth">
+
+
+
+        </activity>
+
     </application>
 
 </manifest>

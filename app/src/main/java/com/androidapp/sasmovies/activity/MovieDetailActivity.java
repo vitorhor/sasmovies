@@ -2,20 +2,19 @@ package com.androidapp.sasmovies.activity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.androidapp.sasmovies.R;
 import com.androidapp.sasmovies.api.MoviesService;
+import com.androidapp.sasmovies.contract.MovieDetailContract;
 import com.androidapp.sasmovies.entity.Movie;
+import com.androidapp.sasmovies.presenter.MovieDetailPresenter;
 import com.androidapp.sasmovies.repository.MovieRepository;
 import com.androidapp.sasmovies.util.AppConstant;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -23,23 +22,20 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.json.JSONObject;
 
-import java.lang.reflect.Type;
+public class MovieDetailActivity extends BaseActivity implements MovieDetailContract.View {
 
-import cz.msebera.android.httpclient.Header;
-
-public class MovieDetailActivity extends BaseActivity {
+    private MovieDetailContract.Presenter presenter;
 
     private ProgressBar progressBarBackdrop, progressBarPoster;
 
-    private ImageView imgBackdrop, imgPoster;
-
-    private String id;
-
-    private Movie entity;
+    private ImageView imgBackdrop, imgPoster, imgFavorite;
 
     private TextView txName, txDescription;
+
+    private ViewFlipper viewFlipperFavorite;
+
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +53,13 @@ public class MovieDetailActivity extends BaseActivity {
 
         setWidgets();
         setActions();
-        getData();
+
+        MoviesService moviesService = new MoviesService(service);
+        MovieRepository movieRepository = MovieRepository.getInstance(moviesService);
+
+        presenter = new MovieDetailPresenter(movieRepository, this);
+
+        presenter.getDetails(id);
 
         if( android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP ) {
             getWindow().setEnterTransition(null);
@@ -78,47 +80,35 @@ public class MovieDetailActivity extends BaseActivity {
 
         txName = findViewById(R.id.txName);
         txDescription = findViewById(R.id.txDescription);
+        viewFlipperFavorite = findViewById(R.id.viewFlipperFavorite);
 
     }
 
     @Override
     protected void setActions() {
 
-
-
-    }
-
-    private void getData(){
-
-        MoviesService moviesService = new MoviesService(service);
-
-        MovieRepository movieRepository = MovieRepository.getInstance(moviesService);
-
-        movieRepository.getMovieDetail(id, new JsonHttpResponseHandler() {
-
+        viewFlipperFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onClick(View v) {
 
-                Log.d("mslz", response.toString());
+                viewFlipperFavorite.setEnabled(false);
 
-                Type type = new TypeToken<Movie>() {}.getType();
+                boolean favorite = false;
 
-                String userJson = response.toString();
-                entity = new Gson().fromJson(userJson, type);
+                if( viewFlipperFavorite.getDisplayedChild() == 0 ){
+                    favorite = true;
+                }
 
-                loadData();
+                viewFlipperFavorite.setDisplayedChild(2);
+                presenter.markAsFavorite(id, favorite);
 
             }
-
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
-                Log.d("mslz", "Falha onFailure = " + response.toString());
-            }
-
         });
 
     }
 
-    private void loadData(){
+    @Override
+    public void showDetails(Movie entity) {
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(AppConstant.AMERICAN_DATE_FORMAT);
         LocalDate dateTimeExpireAt = LocalDate.parse(entity.getReleaseDate(), dateTimeFormatter);
@@ -198,6 +188,30 @@ public class MovieDetailActivity extends BaseActivity {
 
             }
         });
+
+        refreshFavorite(entity.getFavorite());
+
+    }
+
+    @Override
+    public void refreshFavorite(boolean favorite) {
+
+        if( favorite ){
+            viewFlipperFavorite.setDisplayedChild(1);
+        } else {
+            viewFlipperFavorite.setDisplayedChild(0);
+        }
+
+        viewFlipperFavorite.setEnabled(true);
+
+    }
+
+    @Override
+    public void setPresenter(MovieDetailContract.Presenter presenter) {
+
+        if( presenter != null ){
+            this.presenter = presenter;
+        }
 
     }
 
