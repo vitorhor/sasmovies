@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+def T = '"' + T + '"' ?: '"T"';
+
+android.buildTypes.each {
+    it.buildConfigField('String', 'T', T)
+}
+
 android {
     compileSdkVersion 28
     defaultConfig {

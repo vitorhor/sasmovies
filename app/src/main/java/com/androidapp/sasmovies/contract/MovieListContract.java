@@ -1,28 +1,26 @@
 package com.androidapp.sasmovies.contract;
 
-import com.androidapp.sasmovies.BaseView;
 import com.androidapp.sasmovies.entity.Movie;
-import com.androidapp.sasmovies.presenter.BasePresenter;
 
 import java.util.List;
 
-public interface MovieContract {
+public interface MovieListContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View {
 
         void showMovies(List<Movie> movieList);
-
-//        void getAccountId();
 
         void authUser(String requestToken);
 
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter {
 
         void loadMovies();
 
         void createSession();
+
+        void getRequestToken();
 
     }
 

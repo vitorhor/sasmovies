@@ -1,12 +1,9 @@
 package com.androidapp.sasmovies.presenter;
 
-import android.util.Log;
-
-import com.androidapp.sasmovies.contract.MovieContract;
-import com.androidapp.sasmovies.delegate.RequestDelegate;
+import com.androidapp.sasmovies.api.AuthenticationService;
+import com.androidapp.sasmovies.api.MoviesService;
+import com.androidapp.sasmovies.contract.MovieListContract;
 import com.androidapp.sasmovies.entity.Movie;
-import com.androidapp.sasmovies.repository.AuthenticationRepository;
-import com.androidapp.sasmovies.repository.MovieRepository;
 import com.androidapp.sasmovies.util.AppConstant;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,33 +19,27 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-public class MoviePresenter implements MovieContract.Presenter, RequestDelegate {
+public class MovieListPresenter implements MovieListContract.Presenter {
 
-    private MovieRepository movieRepository;
+    private MoviesService moviesService;
 
-    private AuthenticationRepository authenticationRepository;
+    private AuthenticationService authenticationService;
 
-    private MovieContract.View movieView;
+    private MovieListContract.View movieView;
 
-    public MoviePresenter(MovieRepository movieRepo, AuthenticationRepository authRepo, MovieContract.View movieView) {
-        this.movieRepository = movieRepo;
-        this.authenticationRepository = authRepo;
+    public MovieListPresenter(MoviesService moviesService, AuthenticationService authService, MovieListContract.View movieView) {
+        this.moviesService = moviesService;
+        this.authenticationService = authService;
         this.movieView = movieView;
     }
 
     @Override
-    public void start() {
-        getRequestToken();
-    }
+    public void getRequestToken() {
 
-    private void getRequestToken() {
-
-        authenticationRepository.getRequestToken(this, new JsonHttpResponseHandler() {
+        authenticationService.getRequestToken(new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                Log.d("mslz", response.toString());
 
                 try {
                     movieView.authUser(response.getString("request_token"));
@@ -59,7 +50,6 @@ public class MoviePresenter implements MovieContract.Presenter, RequestDelegate 
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
-                Log.d("mslz", "Falha onFailure = " + response.toString());
             }
 
         });
@@ -77,12 +67,10 @@ public class MoviePresenter implements MovieContract.Presenter, RequestDelegate 
             e.printStackTrace();
         }
 
-        authenticationRepository.createSession(this, params, new JsonHttpResponseHandler() {
+        authenticationService.createSession(params, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                Log.d("mslz", response.toString());
 
                 try {
                     Prefs.putString(AppConstant.SESSION_ID, response.getString(AppConstant.SESSION_ID));
@@ -94,7 +82,7 @@ public class MoviePresenter implements MovieContract.Presenter, RequestDelegate 
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
-                Log.d("mslz", "Falha onFailure = " + response.toString());
+
             }
 
         });
@@ -108,12 +96,10 @@ public class MoviePresenter implements MovieContract.Presenter, RequestDelegate 
 
     private void getMovies(){
 
-        movieRepository.getMovies(new JsonHttpResponseHandler() {
+        moviesService.getPopularMovies(new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                Log.d("mslz", response.toString());
 
                 Type type = new TypeToken<List<Movie>>() {}.getType();
 
@@ -133,21 +119,10 @@ public class MoviePresenter implements MovieContract.Presenter, RequestDelegate 
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
-                Log.d("mslz", "Falha onFailure = " + response.toString());
                 movieView.showMovies(new ArrayList<Movie>());
             }
 
         });
-
-    }
-
-    @Override
-    public void onStartRequest() {
-
-    }
-
-    @Override
-    public void onFinishRequest() {
 
     }
 

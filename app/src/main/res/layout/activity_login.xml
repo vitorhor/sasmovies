@@ -7,7 +7,7 @@
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
     android:padding="40dp"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MovieListActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

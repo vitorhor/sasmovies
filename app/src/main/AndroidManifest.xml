@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.androidapp.sasmovies">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -14,7 +15,8 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".activity.SplashActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="sensorPortrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,26 +27,16 @@
         </activity>
 
         <activity android:name=".activity.LoginActivity"
-            android:label="@string/login">
-        </activity>
+            android:label="@string/login" />
 
-        <activity android:name=".activity.MainActivity"
-            android:label="@string/movie_list">
-        </activity>
+        <activity android:name=".activity.MovieListActivity"
+            android:label="@string/movie_list" />
 
         <activity android:name=".activity.MovieDetailActivity"
-            android:label="@string/movie_detail">
-
-
-
-        </activity>
+            android:label="@string/movie_detail" />
 
         <activity android:name=".activity.AuthActivity"
-            android:label="@string/auth">
-
-
-
-        </activity>
+            android:label="@string/auth" />
 
     </application>
 

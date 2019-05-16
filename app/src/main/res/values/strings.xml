@@ -6,7 +6,9 @@
     <string name="auth">Autenticação</string>
     <string name="do_login">Faça login utilizando <b>sua conta do Google</b> para ter acesso às informações dos filmes mais populares do momento!</string>
     <string name="signin_button_text">Login Google</string>
-    <string name="login_failed">Não foi possível realizar o login.</string>
+    <string name="try_again">Permitir acesso</string>
+    <string name="login_failed">Não foi possível realizar o login. Por favor, tente novamente.</string>
+    <string name="api_not_allowed">É necessário permitir o acesso do <b>The Movie Database</b> para fazer uso de todas as funcionalidades do aplicativo.</string>
 
     <string name="transition_main">imgMain</string>
     <string name="transition_detail">imgDetail</string>

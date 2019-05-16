@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import androidx.annotation.Nullable;
@@ -16,26 +17,26 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidapp.sasmovies.R;
-import com.androidapp.sasmovies.adapter.MovieAdapter;
+import com.androidapp.sasmovies.adapter.MovieListAdapter;
 import com.androidapp.sasmovies.api.AuthenticationService;
 import com.androidapp.sasmovies.api.MoviesService;
-import com.androidapp.sasmovies.contract.MovieContract;
+import com.androidapp.sasmovies.contract.MovieListContract;
 import com.androidapp.sasmovies.delegate.ItemClickDelegate;
 import com.androidapp.sasmovies.entity.Movie;
-import com.androidapp.sasmovies.presenter.MoviePresenter;
-import com.androidapp.sasmovies.repository.AuthenticationRepository;
-import com.androidapp.sasmovies.repository.MovieRepository;
+import com.androidapp.sasmovies.presenter.MovieListPresenter;
 import com.androidapp.sasmovies.util.AppConstant;
 import com.google.firebase.auth.FirebaseAuth;
 import com.pixplicity.easyprefs.library.Prefs;
 
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements MovieContract.View, ItemClickDelegate {
+public class MovieListActivity extends BaseActivity implements MovieListContract.View, ItemClickDelegate {
 
     public static final int REQUEST_PERMISSION = 4412;
 
-    private MovieContract.Presenter presenter;
+    private TextView txAllowApi;
+
+    private MovieListContract.Presenter presenter;
 
     private ViewFlipper viewFlipper;
 
@@ -54,15 +55,12 @@ public class MainActivity extends BaseActivity implements MovieContract.View, It
 
         MoviesService moviesService = new MoviesService(service);
         AuthenticationService authenticationService = new AuthenticationService(service);
-
-        MovieRepository movieRepository = MovieRepository.getInstance(moviesService);
-        AuthenticationRepository authenticationRepository = AuthenticationRepository.getInstance(authenticationService);
-        presenter = new MoviePresenter(movieRepository, authenticationRepository, this);
+        presenter = new MovieListPresenter(moviesService, authenticationService, this);
 
         String sessionId = Prefs.getString(AppConstant.SESSION_ID, "");
 
         if( sessionId.isEmpty() ){
-            presenter.start();
+            presenter.getRequestToken();
         } else {
             presenter.loadMovies();
         }
@@ -72,6 +70,7 @@ public class MainActivity extends BaseActivity implements MovieContract.View, It
     @Override
     protected void setWidgets() {
 
+        txAllowApi = findViewById(R.id.txAllowApi);
         viewFlipper = findViewById(R.id.viewFlipper);
 
         recyclerView = findViewById(R.id.recyclerView);
@@ -84,21 +83,19 @@ public class MainActivity extends BaseActivity implements MovieContract.View, It
     @Override
     protected void setActions() {
 
-    }
-
-    @Override
-    public void setPresenter(MovieContract.Presenter presenter) {
-
-        if( presenter != null ){
-            this.presenter = presenter;
-        }
+        txAllowApi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getRequestToken();
+            }
+        });
 
     }
 
     @Override
     public void showMovies(List<Movie> movieList) {
 
-        MovieAdapter adapter = new MovieAdapter(this, this, movieList);
+        MovieListAdapter adapter = new MovieListAdapter(this, this, movieList);
         recyclerView.setAdapter(adapter);
 
         viewFlipper.setDisplayedChild(AppConstant.STATUS_SHOW);
@@ -113,7 +110,7 @@ public class MainActivity extends BaseActivity implements MovieContract.View, It
     }
 
     @Override
-    public void onItemClick(String id, View v) {
+    public void onItemClick(int id, View v) {
 
         Intent i = new Intent(this, MovieDetailActivity.class);
 
@@ -179,10 +176,13 @@ public class MainActivity extends BaseActivity implements MovieContract.View, It
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if( resultCode == Activity.RESULT_OK){
+        if( requestCode == REQUEST_PERMISSION){
 
-            if( requestCode == REQUEST_PERMISSION ){
+            if( resultCode == Activity.RESULT_OK ){
+                viewFlipper.setDisplayedChild(AppConstant.STATUS_LOADING);
                 presenter.createSession();
+            } else {
+                viewFlipper.setDisplayedChild(2);
             }
 
         }
