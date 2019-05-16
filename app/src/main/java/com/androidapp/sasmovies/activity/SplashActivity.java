@@ -50,7 +50,7 @@ public class SplashActivity extends BaseActivity {
 
         Bundle bundle = new Bundle();
 
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, MovieListActivity.class);
 
         if( currentUser == null ){
 

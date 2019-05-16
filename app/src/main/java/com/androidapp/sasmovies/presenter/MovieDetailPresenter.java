@@ -2,10 +2,9 @@ package com.androidapp.sasmovies.presenter;
 
 import android.util.Log;
 
+import com.androidapp.sasmovies.api.MoviesService;
 import com.androidapp.sasmovies.contract.MovieDetailContract;
-import com.androidapp.sasmovies.delegate.RequestDelegate;
 import com.androidapp.sasmovies.entity.Movie;
-import com.androidapp.sasmovies.repository.MovieRepository;
 import com.androidapp.sasmovies.util.AppConstant;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -20,24 +19,19 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-public class MovieDetailPresenter implements MovieDetailContract.Presenter, RequestDelegate {
+public class MovieDetailPresenter implements MovieDetailContract.Presenter {
 
-    private MovieRepository movieRepository;
+    private MoviesService moviesService;
 
     private MovieDetailContract.View movieView;
 
-    public MovieDetailPresenter(MovieRepository movieRepo, MovieDetailContract.View movieView) {
-        this.movieRepository = movieRepo;
+    public MovieDetailPresenter(MoviesService moviesService, MovieDetailContract.View movieView) {
+        this.moviesService = moviesService;
         this.movieView = movieView;
     }
 
     @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void markAsFavorite(String id, final boolean favorite) {
+    public void markAsFavorite(int id, final boolean favorite) {
 
         JSONObject params = new JSONObject();
 
@@ -49,7 +43,7 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter, Requ
             e.printStackTrace();
         }
 
-        movieRepository.markAsFavorite(params, new JsonHttpResponseHandler() {
+        moviesService.markAsFavorite(params, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -66,9 +60,9 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter, Requ
     }
 
     @Override
-    public void getDetails(String id) {
+    public void getDetails(int id) {
 
-        movieRepository.getMovieDetail(id, new JsonHttpResponseHandler() {
+        moviesService.getMovieDetail(id, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -97,7 +91,7 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter, Requ
     @Override
     public void getFavorites(final Movie entity) {
 
-        movieRepository.getFavorites(new JsonHttpResponseHandler() {
+        moviesService.getFavorites(new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -142,14 +136,5 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter, Requ
         });
 
     }
-
-    @Override
-    public void onStartRequest() {
-
-    }
-
-    @Override
-    public void onFinishRequest() {
-
-    }
+    
 }

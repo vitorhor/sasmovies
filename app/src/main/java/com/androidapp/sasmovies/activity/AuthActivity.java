@@ -2,7 +2,6 @@ package com.androidapp.sasmovies.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -33,9 +32,7 @@ public class AuthActivity extends BaseActivity {
 
     @Override
     protected void setWidgets() {
-
         webView = findViewById(R.id.webView);
-
     }
 
     @Override
@@ -45,23 +42,10 @@ public class AuthActivity extends BaseActivity {
 
         WebViewClient webViewClient = new WebViewClient() {
 
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//
-//                if (url.contains("/auth/access/approve")) {
-//                    return true;
-//                }
-//
-//                return false;
-//
-//            }
-
             @Override
             public void onPageFinished(WebView view, String url) {
 
                 super.onPageFinished(view, url);
-
-                Log.d("mslz", url);
 
                 if (url.contains("/allow")) {
 
@@ -86,11 +70,13 @@ public class AuthActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+
         if (webView.canGoBack()) {
             webView.goBack();
         } else {
             super.onBackPressed();
         }
+
     }
 
 }

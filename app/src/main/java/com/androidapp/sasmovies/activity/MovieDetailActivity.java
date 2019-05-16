@@ -13,8 +13,8 @@ import com.androidapp.sasmovies.api.MoviesService;
 import com.androidapp.sasmovies.contract.MovieDetailContract;
 import com.androidapp.sasmovies.entity.Movie;
 import com.androidapp.sasmovies.presenter.MovieDetailPresenter;
-import com.androidapp.sasmovies.repository.MovieRepository;
 import com.androidapp.sasmovies.util.AppConstant;
+import com.androidapp.sasmovies.util.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -29,13 +29,13 @@ public class MovieDetailActivity extends BaseActivity implements MovieDetailCont
 
     private ProgressBar progressBarBackdrop, progressBarPoster;
 
-    private ImageView imgBackdrop, imgPoster, imgFavorite;
+    private ImageView imgBackdrop, imgPoster;
 
     private TextView txName, txDescription;
 
     private ViewFlipper viewFlipperFavorite;
 
-    private String id;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class MovieDetailActivity extends BaseActivity implements MovieDetailCont
             postponeEnterTransition();
         }
 
-        id = getIntent().getStringExtra(AppConstant.KEY_ID);
+        id = getIntent().getIntExtra(AppConstant.KEY_ID, -1);
 
         setToolbar(true);
 
@@ -55,9 +55,8 @@ public class MovieDetailActivity extends BaseActivity implements MovieDetailCont
         setActions();
 
         MoviesService moviesService = new MoviesService(service);
-        MovieRepository movieRepository = MovieRepository.getInstance(moviesService);
 
-        presenter = new MovieDetailPresenter(movieRepository, this);
+        presenter = new MovieDetailPresenter(moviesService, this);
 
         presenter.getDetails(id);
 
@@ -116,48 +115,16 @@ public class MovieDetailActivity extends BaseActivity implements MovieDetailCont
         txName.setText(entity.getTitle() + " - " + dateTimeExpireAt.toString(AppConstant.BRAZILIAN_DATE_FORMAT) + "\n" + "(" + entity.getOriginalTitle() + ")");
         txDescription.setText(entity.getOverview());
 
-        String url = "https://image.tmdb.org/t/p/w500/" + entity.getBackdropPath();
+        String url = AppConstant.API_IMAGE + entity.getBackdropPath();
+        Util.loadImage( url, progressBarBackdrop, imgBackdrop );
 
-        ImageLoader.getInstance().displayImage(url, imgBackdrop, null, new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-
-                if (progressBarBackdrop != null) {
-                    progressBarBackdrop.setVisibility(View.VISIBLE);
-                }
-
-                view.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                if (progressBarBackdrop != null) {
-                    progressBarBackdrop.setVisibility(View.GONE);
-                }
-
-                view.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
-                if (progressBarBackdrop != null) {
-                    progressBarBackdrop.setVisibility(View.GONE);
-                }
-
-                view.setVisibility(View.VISIBLE);
-            }
-        });
-
-        String urlPoster = "https://image.tmdb.org/t/p/w500/" + entity.getPosterPath();
-
+        String urlPoster = AppConstant.API_IMAGE + entity.getPosterPath();
         ImageLoader.getInstance().displayImage(urlPoster, imgPoster, null, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
 
-                if (progressBarBackdrop != null) {
-                    progressBarBackdrop.setVisibility(View.VISIBLE);
+                if (progressBarPoster != null) {
+                    progressBarPoster.setVisibility(View.VISIBLE);
                 }
 
                 view.setVisibility(View.GONE);
@@ -166,8 +133,8 @@ public class MovieDetailActivity extends BaseActivity implements MovieDetailCont
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 
-                if (progressBarBackdrop != null) {
-                    progressBarBackdrop.setVisibility(View.GONE);
+                if (progressBarPoster != null) {
+                    progressBarPoster.setVisibility(View.GONE);
                 }
 
                 view.setVisibility(View.VISIBLE);
@@ -176,8 +143,8 @@ public class MovieDetailActivity extends BaseActivity implements MovieDetailCont
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 
-                if (progressBarBackdrop != null) {
-                    progressBarBackdrop.setVisibility(View.GONE);
+                if (progressBarPoster != null) {
+                    progressBarPoster.setVisibility(View.GONE);
                 }
 
                 view.setVisibility(View.VISIBLE);
@@ -203,15 +170,6 @@ public class MovieDetailActivity extends BaseActivity implements MovieDetailCont
         }
 
         viewFlipperFavorite.setEnabled(true);
-
-    }
-
-    @Override
-    public void setPresenter(MovieDetailContract.Presenter presenter) {
-
-        if( presenter != null ){
-            this.presenter = presenter;
-        }
 
     }
 

@@ -1,12 +1,10 @@
 package com.androidapp.sasmovies.contract;
 
-import com.androidapp.sasmovies.BaseView;
 import com.androidapp.sasmovies.entity.Movie;
-import com.androidapp.sasmovies.presenter.BasePresenter;
 
 public interface MovieDetailContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View {
 
         void showDetails(Movie entity);
 
@@ -14,11 +12,11 @@ public interface MovieDetailContract {
 
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter {
 
-        void markAsFavorite(String id, boolean favorite);
+        void markAsFavorite(int id, boolean favorite);
 
-        void getDetails(String id);
+        void getDetails(int id);
 
         void getFavorites(Movie entity);
 
