@@ -9,9 +9,9 @@
     <string name="try_again">Permitir acesso</string>
     <string name="login_failed">Não foi possível realizar o login. Por favor, tente novamente.</string>
     <string name="api_not_allowed">É necessário permitir o acesso do <b>The Movie Database</b> para fazer uso de todas as funcionalidades do aplicativo.</string>
+    <string name="movie_not_available">Não foi possível acessar os dados do filme</string>
 
     <string name="transition_main">imgMain</string>
     <string name="transition_detail">imgDetail</string>
     <string name="menu_loggout">Logout</string>
-    <string name="callback_url">http://sasmovies.com.br</string>
 </resources>

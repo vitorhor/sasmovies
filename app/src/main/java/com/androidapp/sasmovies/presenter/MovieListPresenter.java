@@ -1,7 +1,7 @@
 package com.androidapp.sasmovies.presenter;
 
-import com.androidapp.sasmovies.api.AuthenticationService;
-import com.androidapp.sasmovies.api.MoviesService;
+import com.androidapp.sasmovies.api.AuthenticationServiceApi;
+import com.androidapp.sasmovies.api.MoviesServiceApi;
 import com.androidapp.sasmovies.contract.MovieListContract;
 import com.androidapp.sasmovies.entity.Movie;
 import com.androidapp.sasmovies.util.AppConstant;
@@ -21,13 +21,13 @@ import cz.msebera.android.httpclient.Header;
 
 public class MovieListPresenter implements MovieListContract.Presenter {
 
-    private MoviesService moviesService;
+    private MoviesServiceApi moviesService;
 
-    private AuthenticationService authenticationService;
+    private AuthenticationServiceApi authenticationService;
 
     private MovieListContract.View movieView;
 
-    public MovieListPresenter(MoviesService moviesService, AuthenticationService authService, MovieListContract.View movieView) {
+    public MovieListPresenter(MoviesServiceApi moviesService, AuthenticationServiceApi authService, MovieListContract.View movieView) {
         this.moviesService = moviesService;
         this.authenticationService = authService;
         this.movieView = movieView;
@@ -74,7 +74,7 @@ public class MovieListPresenter implements MovieListContract.Presenter {
 
                 try {
                     Prefs.putString(AppConstant.SESSION_ID, response.getString(AppConstant.SESSION_ID));
-                    getMovies();
+                    loadMovies();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -91,10 +91,6 @@ public class MovieListPresenter implements MovieListContract.Presenter {
 
     @Override
     public void loadMovies() {
-        getMovies();
-    }
-
-    private void getMovies(){
 
         moviesService.getPopularMovies(new JsonHttpResponseHandler() {
 

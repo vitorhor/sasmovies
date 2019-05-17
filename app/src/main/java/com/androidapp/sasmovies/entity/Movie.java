@@ -1,6 +1,8 @@
 
 package com.androidapp.sasmovies.entity;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -85,6 +87,35 @@ public class Movie {
     private Integer voteCount;
 
     private Boolean favorite = false;
+
+    public Movie(){
+
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+
+        if( ((Movie) obj).id == this.id ){
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public Movie(Integer id, String title, String posterPath ){
+        this.id = id;
+        this.title = title;
+        this.posterPath = posterPath;
+    }
+
+    public Movie(Integer id, String title, String posterPath, String backdropPath, String overview ){
+        this.id = id;
+        this.title = title;
+        this.posterPath = posterPath;
+        this.backdropPath = backdropPath;
+        this.overview = overview;
+    }
 
     public Boolean getAdult() {
         return adult;

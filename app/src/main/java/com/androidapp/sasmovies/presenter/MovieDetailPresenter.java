@@ -1,8 +1,6 @@
 package com.androidapp.sasmovies.presenter;
 
-import android.util.Log;
-
-import com.androidapp.sasmovies.api.MoviesService;
+import com.androidapp.sasmovies.api.MoviesServiceApi;
 import com.androidapp.sasmovies.contract.MovieDetailContract;
 import com.androidapp.sasmovies.entity.Movie;
 import com.androidapp.sasmovies.util.AppConstant;
@@ -21,11 +19,11 @@ import cz.msebera.android.httpclient.Header;
 
 public class MovieDetailPresenter implements MovieDetailContract.Presenter {
 
-    private MoviesService moviesService;
+    private MoviesServiceApi moviesService;
 
     private MovieDetailContract.View movieView;
 
-    public MovieDetailPresenter(MoviesService moviesService, MovieDetailContract.View movieView) {
+    public MovieDetailPresenter(MoviesServiceApi moviesService, MovieDetailContract.View movieView) {
         this.moviesService = moviesService;
         this.movieView = movieView;
     }
@@ -47,12 +45,10 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("mslz", response.toString());
                 movieView.refreshFavorite(favorite);
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
-                Log.d("mslz", "Falha onFailure = " + response.toString());
             }
 
         });
@@ -67,10 +63,7 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                Log.d("mslz", response.toString());
-
-                Type type = new TypeToken<Movie>() {
-                }.getType();
+                Type type = new TypeToken<Movie>() {}.getType();
 
                 String userJson = response.toString();
                 Movie entity = new Gson().fromJson(userJson, type);
@@ -80,7 +73,7 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
-                Log.d("mslz", "Falha onFailure = " + response.toString());
+                movieView.showDetails(null);
             }
 
         });
@@ -95,8 +88,6 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                Log.d("mslz", response.toString());
 
                 Type type = new TypeToken<List<Movie>>() {
                 }.getType();
@@ -129,8 +120,7 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
-                Log.d("mslz", "Falha onFailure = " + response.toString());
-                movieView.showDetails(new Movie());
+                movieView.showDetails(null);
             }
 
         });
