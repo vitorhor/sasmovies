@@ -19,7 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.androidapp.sasmovies.R;
 import com.androidapp.sasmovies.adapter.MovieListAdapter;
 import com.androidapp.sasmovies.api.AuthenticationService;
+import com.androidapp.sasmovies.api.AuthenticationServiceApi;
 import com.androidapp.sasmovies.api.MoviesService;
+import com.androidapp.sasmovies.api.MoviesServiceApi;
 import com.androidapp.sasmovies.contract.MovieListContract;
 import com.androidapp.sasmovies.delegate.ItemClickDelegate;
 import com.androidapp.sasmovies.entity.Movie;
@@ -53,8 +55,8 @@ public class MovieListActivity extends BaseActivity implements MovieListContract
         setWidgets();
         setActions();
 
-        MoviesService moviesService = new MoviesService(service);
-        AuthenticationService authenticationService = new AuthenticationService(service);
+        MoviesServiceApi moviesService = new MoviesService(service);
+        AuthenticationServiceApi authenticationService = new AuthenticationService(service);
         presenter = new MovieListPresenter(moviesService, authenticationService, this);
 
         String sessionId = Prefs.getString(AppConstant.SESSION_ID, "");

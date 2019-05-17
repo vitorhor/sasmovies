@@ -4,7 +4,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
 
-public class MoviesService {
+public class MoviesService implements MoviesServiceApi {
 
     private final BaseApiService service;
 

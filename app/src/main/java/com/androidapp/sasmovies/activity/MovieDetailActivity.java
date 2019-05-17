@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.androidapp.sasmovies.R;
@@ -108,6 +109,12 @@ public class MovieDetailActivity extends BaseActivity implements MovieDetailCont
 
     @Override
     public void showDetails(Movie entity) {
+
+        if( entity == null ){
+            Toast.makeText(this, getString(R.string.movie_not_available), Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(AppConstant.AMERICAN_DATE_FORMAT);
         LocalDate dateTimeExpireAt = LocalDate.parse(entity.getReleaseDate(), dateTimeFormatter);
